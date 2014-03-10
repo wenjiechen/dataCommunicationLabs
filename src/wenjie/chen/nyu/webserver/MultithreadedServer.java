@@ -10,14 +10,14 @@ import java.text.DateFormat;
 import java.util.Date;
 import java.util.Scanner;
 
-public class SingleThreadedServer implements Runnable {
+public class MultithreadedServer implements Runnable {
 
   protected int serverPort = 8080;
   protected ServerSocket serverSocket = null;
   protected boolean isStopped = false;
   protected Thread runningThread = null;
 
-  public SingleThreadedServer(int port) {
+  public MultithreadedServer(int port) {
     this.serverPort = port;
   }
 
@@ -38,32 +38,11 @@ public class SingleThreadedServer implements Runnable {
         }
         throw new RuntimeException("Error accepting client connection", e);
       }
-      try {
-        processClientRequest(clientSocket);
-      } catch (IOException e) {
-        // log exception and go on to next request.
-
-      }
+      new Thread(new WorkerRunnable(clientSocket, "Multithreaded Server"))
+          .start();
     }
 
     System.out.println("Server Stopped.");
-  }
-
-  private void processClientRequest(Socket clientSocket) throws IOException {
-    InputStream input = clientSocket.getInputStream();
-    OutputStream output = clientSocket.getOutputStream();
-
-    // response the client
-    Date now = new Date();
-    DateFormat dataFormater = DateFormat.getDateTimeInstance();
-    String date = dataFormater.format(now);
-    String responseContent = new Scanner(new File("testFiles\\index2.html"))
-        .useDelimiter("\\Z").next();
-
-    output.write(("HTTP/1.1 200 OK\n\n" + responseContent).getBytes());
-    output.close();
-    input.close();
-    System.out.println("Request processed: " + date);
   }
 
   private synchronized boolean isStopped() {

@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Data Entry: temperature conversion</title>
+    <script type="text/javascript">
+        //<![CDATA[
+        function temperature(form) {
+            form.DegC.value = " ";
+            var f = parseFloat(form.DegF.value, 10); //the 10 tells JavaScript to use a decimal number
+            if (isNaN(f)) { //if f is not a number
+                document.getElementById("TempResult").innerHTML = "Error!! You did not follow our instructions!!!";
+            }
+            else {
+                var c = 0;
+                c = (f - 32.00) * 5.0 / 9.0;
+                c = c.toFixed(2)
+                form.DegC.value = c;
+                document.getElementById("TempResult").innerHTML = "The new temperature in Centigrade is " + c + ".";
+            }
+        }
+        //]]>
+
+    </script>
+</head>
+<body>
+<form>
+    <h2>Fahrenheit to Celsius Converter</h2>
+    <hr/>
+    <p>Enter a temperature in degrees Fahrenheit: <input name='DegF' value='0'></p>
+    <p>Click this button to calculate the temperature in degrees Centigrade:
+        <input name='calc' value='Calculate' type='button' onclick="temperature(this.form)"></p>
+    <p>Temperature in degrees C is: <input name='DegC' readonly>
+        <input value='start again' type='reset'></p>
+</form>
+<hr/>
+<p id='TempResult'>&nbsp</p>
+</body>
+</html>
