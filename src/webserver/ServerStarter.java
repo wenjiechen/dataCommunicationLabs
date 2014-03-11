@@ -1,7 +1,7 @@
 package webserver;
 
 public class ServerStarter {
-  private static final int RUN_TIME = 60;
+  private static final int RUN_TIME = 600;
 
   public static void main(String[] args) {
     MultiThreadedServer server = new MultiThreadedServer(9000);
