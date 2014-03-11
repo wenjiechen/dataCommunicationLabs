@@ -1,4 +1,4 @@
-package wenjie.chen.nyu.webserver;
+package webserver;
 
 import java.io.File;
 import java.io.IOException;
@@ -10,14 +10,14 @@ import java.text.DateFormat;
 import java.util.Date;
 import java.util.Scanner;
 
-public class MultithreadedServer implements Runnable {
+public class SingleThreadedServer implements Runnable {
 
   protected int serverPort = 8080;
   protected ServerSocket serverSocket = null;
   protected boolean isStopped = false;
   protected Thread runningThread = null;
 
-  public MultithreadedServer(int port) {
+  public SingleThreadedServer(int port) {
     this.serverPort = port;
   }
 
@@ -38,11 +38,32 @@ public class MultithreadedServer implements Runnable {
         }
         throw new RuntimeException("Error accepting client connection", e);
       }
-      new Thread(new WorkerRunnable(clientSocket, "Multithreaded Server"))
-          .start();
+      try {
+        processClientRequest(clientSocket);
+      } catch (IOException e) {
+        // log exception and go on to next request.
+
+      }
     }
 
     System.out.println("Server Stopped.");
+  }
+
+  private void processClientRequest(Socket clientSocket) throws IOException {
+    InputStream input = clientSocket.getInputStream();
+    OutputStream output = clientSocket.getOutputStream();
+
+    // response the client
+    Date now = new Date();
+    DateFormat dataFormater = DateFormat.getDateTimeInstance();
+    String date = dataFormater.format(now);
+    String responseContent = new Scanner(new File("testFiles\\index2.html"))
+        .useDelimiter("\\Z").next();
+
+    output.write(("HTTP/1.1 200 OK\n\n" + responseContent).getBytes());
+    output.close();
+    input.close();
+    System.out.println("Request processed: " + date);
   }
 
   private synchronized boolean isStopped() {

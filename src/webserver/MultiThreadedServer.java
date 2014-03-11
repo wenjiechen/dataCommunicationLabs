@@ -1,23 +1,20 @@
-package wenjie.chen.nyu.webserver;
+package webserver;
 
-import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.text.DateFormat;
-import java.util.Date;
-import java.util.Scanner;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
-public class SingleThreadedServer implements Runnable {
+public class MultiThreadedServer implements Runnable {
 
   protected int serverPort = 8080;
   protected ServerSocket serverSocket = null;
   protected boolean isStopped = false;
   protected Thread runningThread = null;
+  protected ExecutorService threadPool = Executors.newFixedThreadPool(10);
 
-  public SingleThreadedServer(int port) {
+  public MultiThreadedServer(int port) {
     this.serverPort = port;
   }
 
@@ -26,7 +23,7 @@ public class SingleThreadedServer implements Runnable {
       this.runningThread = Thread.currentThread();
     }
     openServerSocket();
-
+    System.out.println("Server get started.");
     while (!isStopped()) {
       Socket clientSocket = null;
       try {
@@ -38,32 +35,13 @@ public class SingleThreadedServer implements Runnable {
         }
         throw new RuntimeException("Error accepting client connection", e);
       }
-      try {
-        processClientRequest(clientSocket);
-      } catch (IOException e) {
-        // log exception and go on to next request.
 
-      }
+      this.threadPool.execute(new WorkerRunnable(clientSocket,
+          "Thread Pooled Server"));
     }
 
+    this.threadPool.shutdown();
     System.out.println("Server Stopped.");
-  }
-
-  private void processClientRequest(Socket clientSocket) throws IOException {
-    InputStream input = clientSocket.getInputStream();
-    OutputStream output = clientSocket.getOutputStream();
-
-    // response the client
-    Date now = new Date();
-    DateFormat dataFormater = DateFormat.getDateTimeInstance();
-    String date = dataFormater.format(now);
-    String responseContent = new Scanner(new File("testFiles\\index2.html"))
-        .useDelimiter("\\Z").next();
-
-    output.write(("HTTP/1.1 200 OK\n\n" + responseContent).getBytes());
-    output.close();
-    input.close();
-    System.out.println("Request processed: " + date);
   }
 
   private synchronized boolean isStopped() {

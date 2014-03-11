@@ -1,4 +1,4 @@
-package wenjie.chen.nyu.webserver;
+package webserver;
 
 import java.io.File;
 import java.io.InputStream;
@@ -31,8 +31,9 @@ public class WorkerRunnable implements Runnable {
       Date now = new Date();
       DateFormat dataFormater = DateFormat.getDateTimeInstance();
       String date = dataFormater.format(now);
-      String responseContent = new Scanner(new File("testFiles\\index2.html"))
-          .useDelimiter("\\Z").next();
+      String path = "testFiles\\index2.html";
+      String responseContent = new Scanner(new File(path)).useDelimiter("\\Z")
+          .next();
 
       output.write(("HTTP/1.1 200 OK\n\n" + responseContent).getBytes());
       output.close();

@@ -1,4 +1,4 @@
-package wenjie.chen.nyu.webserver;
+package webserver;
 
 public class StartServer {
 
