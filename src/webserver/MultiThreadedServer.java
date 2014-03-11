@@ -12,7 +12,9 @@ public class MultiThreadedServer implements Runnable {
   protected ServerSocket serverSocket = null;
   protected boolean isStopped = false;
   protected Thread runningThread = null;
-  protected ExecutorService threadPool = Executors.newFixedThreadPool(10);
+  protected static final int NUM_THREAD = 10;
+  protected ExecutorService threadPool = Executors
+      .newFixedThreadPool(NUM_THREAD);
 
   public MultiThreadedServer(int port) {
     this.serverPort = port;
@@ -20,14 +22,14 @@ public class MultiThreadedServer implements Runnable {
 
   public void run() {
     synchronized (this) {
-      this.runningThread = Thread.currentThread();
+      runningThread = Thread.currentThread();
     }
     openServerSocket();
     System.out.println("Server get started.");
     while (!isStopped()) {
       Socket clientSocket = null;
       try {
-        clientSocket = this.serverSocket.accept();
+        clientSocket = serverSocket.accept();
       } catch (IOException e) {
         if (isStopped()) {
           System.out.println("Server Stopped.");
@@ -35,23 +37,21 @@ public class MultiThreadedServer implements Runnable {
         }
         throw new RuntimeException("Error accepting client connection", e);
       }
-
-      this.threadPool.execute(new WorkerRunnable(clientSocket,
+      threadPool.execute(new WorkerRunnable(clientSocket,
           "Thread Pooled Server"));
     }
-
-    this.threadPool.shutdown();
+    threadPool.shutdown();
     System.out.println("Server Stopped.");
   }
 
   private synchronized boolean isStopped() {
-    return this.isStopped;
+    return isStopped;
   }
 
   public synchronized void stop() {
-    this.isStopped = true;
+    isStopped = true;
     try {
-      this.serverSocket.close();
+      serverSocket.close();
     } catch (IOException e) {
       throw new RuntimeException("Error closing server", e);
     }
@@ -59,9 +59,9 @@ public class MultiThreadedServer implements Runnable {
 
   private void openServerSocket() {
     try {
-      this.serverSocket = new ServerSocket(this.serverPort);
+      serverSocket = new ServerSocket(serverPort);
     } catch (IOException e) {
-      throw new RuntimeException("Cannot open port 8080", e);
+      throw new RuntimeException("Cannot open port" + serverPort, e);
     }
   }
 }

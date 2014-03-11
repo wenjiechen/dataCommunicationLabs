@@ -1,14 +1,16 @@
 package webserver;
 
-public class StartMultiThreadedServer {
-  public static void main(String[] args){
+public class ServerStarter {
+  private static final int RUN_TIME = 60;
+
+  public static void main(String[] args) {
     MultiThreadedServer server = new MultiThreadedServer(9000);
     new Thread(server).start();
 
     try {
-        Thread.sleep(20 * 1000);
+      Thread.sleep(RUN_TIME * 1000);
     } catch (InterruptedException e) {
-        e.printStackTrace();
+      e.printStackTrace();
     }
     System.out.println("Stopping Server");
     server.stop();
