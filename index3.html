@@ -1,0 +1,26 @@
+<html>
+	<head>
+		<title>Declaring variables in JavaScript</title>
+		<script>
+//<!CDATA[
+function whileStatements() {
+	var outputString1 = "<h2>Working with while loops</h2> <hr/>";
+	var text = "I will not throw paper airplanes in class. <br/>";
+	var outputString2 = "";
+
+	var counter = 1;
+	while (counter <= 100) {
+		outputString2 += counter + ". " + text + "<br/>";
+		counter += 1;
+	}
+
+	document.getElementById("output1").innerHTML = outputString1 + outputString2;
+}
+//]]>
+		</script>
+	</head>
+
+	<body onload = "whileStatements()">
+		<div id = "output1">&nbsp;</div>
+	</body>
+</html>

@@ -68,7 +68,7 @@ public class WorkerRunnable implements Runnable {
 
     }
 
-    // request file
+    // get request file
     try {
       String filePath = URL.substring(1);
       System.out.println(filePath);
