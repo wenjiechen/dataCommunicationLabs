@@ -1,7 +1,9 @@
 package proxy2;
 
-import java.net.*;
-import java.io.*;
+import java.io.InputStream;
+import java.net.ServerSocket;
+import java.net.Socket;
+import java.util.Arrays;
 
 class ActionSocket extends Thread {
   private Socket socket = null;
@@ -22,12 +24,15 @@ class ActionSocket extends Thread {
     if (this.socket == null) {
       return;
     }
-    BufferedReader br = new BufferedReader(new InputStreamReader(
-        this.socket.getInputStream()));
-    for (String temp = br.readLine(); temp != null; temp = br.readLine()) {
-      System.out.println(temp);
-    }
-    br.close();
+    int count = 0;
+    InputStream inputStream = this.socket.getInputStream();
+    while (count == 0)
+      count = inputStream.available();
+    byte[] b = new byte[count];
+    inputStream.read(b);
+    String str = new String(b);
+    String[] strs = str.split("\\n");
+    System.out.println(Arrays.toString(strs));
   }
 }
 
