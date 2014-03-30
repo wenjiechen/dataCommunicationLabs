@@ -1,10 +1,8 @@
 package webproxy;
 
-import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.InetSocketAddress;
@@ -47,29 +45,29 @@ public class WorkerRunnable implements Runnable {
         new InetSocketAddress(proxyIp, proxyPort));
     // use proxy open a web page
     HttpURLConnection action = (HttpURLConnection) url.openConnection(proxy);
-    
-    InputStream in = action.getInputStream();
-    BufferedReader br = new BufferedReader(new InputStreamReader(in, "UTF-8"));
-    StringBuilder sb = new StringBuilder();
-    String lin = System.getProperty("line.separator");
-    for (String temp = br.readLine(); temp != null; temp = br.readLine()) {
-      sb.append(temp + lin);
-    }
-    System.out.println("====get page===");
-    
-    httpResponseConstructer(sb.toString(), outputStream);
-    br.close();
+
+    httpResponseConstructer(action, outputStream);
     outputStream.close();
     inputStream.close();
   }
 
-  private URL getURL(InputStream inputStream) throws IOException {
+  private byte[] receiveData(InputStream inputStream) {
     int count = 0;
+    byte[] bytes = null;
     while (count == 0)
-      count = inputStream.available();
-    byte[] bytes = new byte[count];
-    inputStream.read(bytes);
-    String str = new String(bytes);
+      try {
+        count = inputStream.available();
+        bytes = new byte[count];
+        inputStream.read(bytes);
+      } catch (IOException e) {
+        e.printStackTrace();
+      }
+    return bytes;
+  }
+
+  private URL getURL(InputStream inputStream) throws IOException {
+
+    String str = new String(receiveData(inputStream));
     if (str.startsWith("GET") == false)
       return null;
     String[] strs = str.split("\\n");
@@ -79,17 +77,17 @@ public class WorkerRunnable implements Runnable {
     try {
       url = new URL(head[1]);
     } catch (MalformedURLException e) {
-      throw new MalformedURLException(" ");
+      throw new MalformedURLException("MalformedURLException: " + url);
     }
     return url;
   }
 
-  private void httpResponseConstructer(String response, OutputStream output)
-      throws IOException {
-    try {
-      output.write(response.getBytes());
-    } catch (FileNotFoundException e) {
-      return;
-    }
+  private void httpResponseConstructer(HttpURLConnection action,
+      OutputStream output) throws IOException {
+    InputStream inputStream = action.getInputStream();
+    byte[] receivedData = receiveData(inputStream);
+    // System.out.println("====get page===");
+    System.out.println(new String(receivedData));
+    output.write(receivedData);
   }
 }

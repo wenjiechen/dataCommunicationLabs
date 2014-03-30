@@ -11,15 +11,19 @@ public class ProxyTest {
         3129)); // 实例化本地代理对象，端口为8888
     URL url = new URL("http://www.google.com");
     HttpURLConnection action = (HttpURLConnection) url.openConnection(proxy); // 使用代理打开网页
-    InputStream in = action.getInputStream();
-    BufferedReader br = new BufferedReader(new InputStreamReader(in, "UTF-8"));
-    StringBuilder sb = new StringBuilder();
-    String lin = System.getProperty("line.separator");
-    for (String temp = br.readLine(); temp != null; temp = br.readLine()) {
-      sb.append(temp + lin);
-    }
-    br.close();
-    in.close();
-    System.out.println(sb);
+    InputStream inputStream = action.getInputStream();
+    int count = 0;
+    byte[] bytes = null;
+    while (count == 0)
+      try {
+        count = inputStream.available();
+        bytes = new byte[count];
+        inputStream.read(bytes);
+      } catch (IOException e) {
+        e.printStackTrace();
+      }
+    
+    inputStream.close();
+    System.out.println(new String(bytes));
   }
 }
