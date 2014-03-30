@@ -5,8 +5,8 @@ public class ProxyServerStarter {
 
   public static void main(String[] args) {
     int localPort = 9000;
-    String proxyIp = "";
-    int proxyPort = 0;
+    String proxyIp = "91.210.44.196";
+    int proxyPort = 3129;
     ProxyThreadPoolServer server = new ProxyThreadPoolServer(localPort,
         proxyIp, proxyPort);
     new Thread(server).start();

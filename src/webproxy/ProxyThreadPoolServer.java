@@ -28,7 +28,8 @@ public class ProxyThreadPoolServer implements Runnable {
       runningThread = Thread.currentThread();
     }
     openServerSocket();
-    System.out.println("Server get started.");
+    System.out.println("Proxy Server get started./n the proxy ip is " + proxyIp
+        + ":" + proxyPort);
     while (!isStopped()) {
       Socket clientSocket = null;
       try {

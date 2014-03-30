@@ -47,6 +47,7 @@ public class WorkerRunnable implements Runnable {
         new InetSocketAddress(proxyIp, proxyPort));
     // use proxy open a web page
     HttpURLConnection action = (HttpURLConnection) url.openConnection(proxy);
+    
     InputStream in = action.getInputStream();
     BufferedReader br = new BufferedReader(new InputStreamReader(in, "UTF-8"));
     StringBuilder sb = new StringBuilder();
@@ -55,6 +56,7 @@ public class WorkerRunnable implements Runnable {
       sb.append(temp + lin);
     }
     System.out.println("====get page===");
+    
     httpResponseConstructer(sb.toString(), outputStream);
     br.close();
     outputStream.close();
