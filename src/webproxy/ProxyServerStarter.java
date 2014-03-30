@@ -4,11 +4,14 @@ public class ProxyServerStarter {
   private static final int RUN_TIME = 600;
 
   public static void main(String[] args) {
-    int localPort = 9000;
-    String proxyIp = "";
-    int proxyPort = 0;
-    ProxyThreadPoolServer server = new ProxyThreadPoolServer(localPort,
-        proxyIp, proxyPort);
+    int localPort;
+    if (args.length < 1)
+      localPort = 9000;
+    else
+      localPort = Integer.valueOf(args[0]);
+    boolean useBufferReader = false;
+    String threadType = "multithread";
+    ProxyServer server = new ProxyServer(localPort, threadType, useBufferReader);
     new Thread(server).start();
 
     try {
@@ -16,7 +19,7 @@ public class ProxyServerStarter {
     } catch (InterruptedException e) {
       e.printStackTrace();
     }
-    System.out.println("Stopping Server");
+    System.out.println("Stopping Proxy Server");
     server.stop();
   }
 }
