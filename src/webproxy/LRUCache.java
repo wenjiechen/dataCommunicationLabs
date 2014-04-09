@@ -1,20 +1,35 @@
 package webproxy;
 
+import java.net.URL;
+
 import org.apache.lucene.util.DoubleBarrelLRUCache;
 import org.apache.lucene.util.DoubleBarrelLRUCache.CloneableKey;
 
 public class LRUCache {
-  DoubleBarrelLRUCache lrucache = new DoubleBarrelLRUCache(100);
-  
-  
-  class URLkey extends DoubleBarrelLRUCache.CloneableKey{   
+  DoubleBarrelLRUCache<URLkey, byte[]> cache;
+
+  public LRUCache(int size) {
+    cache = new DoubleBarrelLRUCache<URLkey, byte[]>(size);
+  }
+
+  class URLkey extends DoubleBarrelLRUCache.CloneableKey {
+    URL url;
+
+    public URLkey(URL url) {
+      this.url = url;
+    }
+
     @Override
     public CloneableKey clone() {
-      // TODO Auto-generated method stub
-      return null;
+      return new URLkey(url);
     }
-    
   }
-  
-  
+
+  public void put(URLkey url, byte[] value) {
+    cache.put(url, value);
+  }
+
+  public byte[] get(URLkey url) {
+    return cache.get(url);
+  }
 }

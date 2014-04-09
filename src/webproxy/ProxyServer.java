@@ -26,8 +26,8 @@ public class ProxyServer implements Runnable {
 
   private String threadtype;
   private boolean useBufferReader;
-  private ConcurrentHashMap<URL, byte[]> contentCache = new ConcurrentHashMap<URL, byte[]>(
-      new HashMap<URL, byte[]>());
+  private ConcurrentLRUCache<URL, byte[]> contentCache = new ConcurrentLRUCache<URL, byte[]>(
+      200);
   private Object lock;
 
   public ProxyServer(int port, String threadtype, boolean useBufferReader) {

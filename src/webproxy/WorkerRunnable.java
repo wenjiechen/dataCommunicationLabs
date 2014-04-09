@@ -17,11 +17,11 @@ public class WorkerRunnable implements Runnable {
 
   private Socket clientSocket = null;
   boolean useBufferReader;
-  private ConcurrentHashMap<URL, byte[]> contentCache;
+  private ConcurrentLRUCache<URL, byte[]> contentCache;
   private Object lock;
 
   public WorkerRunnable(Socket clientSocket, boolean useBufferReader,
-      ConcurrentHashMap<URL, byte[]> contentCache, Object lock) {
+      ConcurrentLRUCache<URL, byte[]> contentCache, Object lock) {
     this.clientSocket = clientSocket;
     this.useBufferReader = useBufferReader;
     this.contentCache = contentCache;
