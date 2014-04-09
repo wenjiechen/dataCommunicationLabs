@@ -1,7 +1,20 @@
 package webproxy;
 
-import java.util.concurrent.ConcurrentHashMap;
+import org.apache.lucene.util.DoubleBarrelLRUCache;
+import org.apache.lucene.util.DoubleBarrelLRUCache.CloneableKey;
 
-public class LRUCache<K, V> extends ConcurrentHashMap<K, V> {
-
+public class LRUCache {
+  DoubleBarrelLRUCache lrucache = new DoubleBarrelLRUCache(100);
+  
+  
+  class URLkey extends DoubleBarrelLRUCache.CloneableKey{   
+    @Override
+    public CloneableKey clone() {
+      // TODO Auto-generated method stub
+      return null;
+    }
+    
+  }
+  
+  
 }

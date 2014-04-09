@@ -9,6 +9,7 @@ public class ProxyServerStarter {
       localPort = 9000;
     else
       localPort = Integer.valueOf(args[0]);
+    //don't change useBufferReader
     boolean useBufferReader = false;
     String threadType = "multithread";
     ProxyServer server = new ProxyServer(localPort, threadType, useBufferReader);

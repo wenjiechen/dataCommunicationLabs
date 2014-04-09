@@ -2,9 +2,10 @@ package webserver;
 
 public class ServerStarter {
   private static final int RUN_TIME = 600;
+  private static int port = 9000;
 
   public static void main(String[] args) {
-    MultiThreadedServer server = new MultiThreadedServer(9000);
+    MultiThreadedServer server = new MultiThreadedServer(port);
     new Thread(server).start();
 
     try {
