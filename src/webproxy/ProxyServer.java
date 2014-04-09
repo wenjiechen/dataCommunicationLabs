@@ -10,8 +10,6 @@ import java.net.MalformedURLException;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.URL;
-import java.util.HashMap;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -26,15 +24,16 @@ public class ProxyServer implements Runnable {
 
   private String threadtype;
   private boolean useBufferReader;
-  private ConcurrentLRUCache<URL, byte[]> contentCache = new ConcurrentLRUCache<URL, byte[]>(
-      200);
+  private ConcurrentLRUCache<URL, byte[]> contentCache;
   private Object lock;
 
-  public ProxyServer(int port, String threadtype, boolean useBufferReader) {
+  public ProxyServer(int port, String threadtype, boolean useBufferReader,
+      int cacheSize) {
     this.serverPort = port;
     this.threadtype = threadtype;
     this.useBufferReader = useBufferReader;
     this.lock = new Object();
+    this.contentCache = new ConcurrentLRUCache<URL, byte[]>(cacheSize);
   }
 
   public void run() {

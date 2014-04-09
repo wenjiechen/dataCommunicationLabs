@@ -12,7 +12,8 @@ public class ProxyServerStarter {
     //don't change useBufferReader
     boolean useBufferReader = false;
     String threadType = "multithread";
-    ProxyServer server = new ProxyServer(localPort, threadType, useBufferReader);
+    int cacheSize = 1000;
+    ProxyServer server = new ProxyServer(localPort, threadType, useBufferReader,cacheSize);
     new Thread(server).start();
 
     try {
