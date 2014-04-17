@@ -27,12 +27,13 @@ public class ConcurrentLRUCache<Key, Value> {
     }
 
     while (queue.size() >= maxSize) {
-      Key oldestKey = queue.poll();
+      Key oldestKey = queue.poll(); // the oldest key is the longest time didn't
+                                    // visit
       if (null != oldestKey) {
         map.remove(oldestKey);
       }
     }
-    queue.add(key);
+    queue.add(key); // add the key at the end of the queue,
     map.put(key, value);
   }
 
